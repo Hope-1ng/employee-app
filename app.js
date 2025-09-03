@@ -8,6 +8,9 @@ app.use(
   "/icons",
   express.static(__dirname + "/node_modules/bootstrap-icons/font")
 );
+require('dotenv').config();
+require('./database/connection')
+
 
 const nav = [
   { name: "Home", link: "/api/home", icon: "bi-house-fill " },

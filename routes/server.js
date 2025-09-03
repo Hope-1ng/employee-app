@@ -1,80 +1,81 @@
 const express = require("express");
+const employeedata = require("../model/employee_model");
 const Router = express.Router();
 Router.use(express.json());
 Router.use(express.urlencoded({ extended: true }));
 
-let emp = [
-  {
-    EmployeeName: "aswanth",
-    ltname: "rocky",
-    EmployeeDesignation: "devloper",
-    EmployeeLocation: "kannur",
-    Salary: 1000,
-    id: 0,
-  },
-  {
-    EmployeeName: "aswanth2",
-    ltname: "rocky",
-    EmployeeDesignation: "devloper2",
-    EmployeeLocation: "kannur2",
-    Salary: 2000,
-    id: 1,
-  },
-  {
-    EmployeeName: "aswanth3",
-    ltname: "rocky",
-    EmployeeDesignation: "devloper2",
-    EmployeeLocation: "kannur2",
-    Salary: 2000,
-    id: 3,
-  },
-  {
-    EmployeeName: "aswanth4",
-    ltname: "rocky",
-    EmployeeDesignation: "devloper2",
-    EmployeeLocation: "kannur2",
-    Salary: 2000,
-    id: 4,
-  },
-];
-
 function routers(nav) {
-  Router.get("/home", (req, res) => {
-    res.render("home", {
-      nav,
-      title: "HOME",
-      emp,
-    });
+  Router.get("/home", async (req, res) => {
+    try {
+      const emp = await employeedata.find();
+      res.render("home", {
+        nav,
+        title: "HOME",
+        emp,
+      });
+    } catch (error) {
+      res.send("failled");
+    }
   });
 
   Router.get("/form", (req, res) => {
     res.render("addemplyee", { nav, title: "New Register" });
   });
 
-  Router.post("/add", (req, res) => {
-    emp.push(req.body);
-    res.redirect("/api/home");
+  Router.post("/add", async (req, res) => {
+    try {
+      let index = req.body;
+      let data = new employeedata(index);
+      await data.save();
+      res.redirect("/api/home");
+    } catch (error) {
+      console.log(error);
+    }
   });
 
-  Router.get("/update/:id", (req, res) => {
-    res.render("update", {
-      id: req.params.id,
-      emp,
-      title: "Update",
-      nav
-    });
+  Router.get("/update/:id", async (req, res) => {
+     const id = req.params.id;
+    try {
+      const emp = await employeedata.findById(id);
+      res.render("update", {
+        id: req.params.id,
+        emp,
+        title: "Update",
+        nav,
+      });
+    } catch (error) {
+      console.log(error);
+      
+    }
   });
 
-  Router.post("/updated/:ind", (req, res) => {
-    const index = req.params.ind;
-    emp.splice(index, 1, req.body);
-    res.redirect("/api/home");
+  Router.post("/updated/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const emp = await employeedata.findByIdAndUpdate(id, req.body);
+      res.redirect("/api/home");
+    } catch (error) {
+      console.log(error);
+    }
   });
 
-  Router.get("/delete/:ind", (req, res) => {
-    const index = req.params.ind;
-    emp.splice(index, 1,);
+  Router.get("/delete/:id", async (req, res) => {
+    const index = req.params.id;
+
+    try {
+
+      let data=await employeedata.findByIdAndDelete(index);
     res.redirect("/api/home");
+
+      
+      
+    } catch (error) {
+      console.log(error);
+      
+      
+    }
+    
+    
   });
 
   return Router;

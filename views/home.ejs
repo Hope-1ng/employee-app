@@ -75,16 +75,16 @@
         <tbody>
           <% emp.forEach(function(item,index) { %>
           <tr style="border: 2px rgb(2, 49, 138) solid">
-            <th scope="row"><%=[index +1]%></th>
+            <th scope="row"><%=index +1%></th>
             <td><%= item.EmployeeName %></td>
             <td><%= item.ltname %></td>
             <td><%= item.EmployeeDesignation %></td>
             <td><%= item.EmployeeLocation %></td>
             <td><%= item.Salary %></td>
             <td style="width: 200px">
-              <a href="/api/update/<%=index%>" class="update" >Update</a>
+              <a href="/api/update/<%=item._id%>" class="update" >Update</a>
           
-               <a href="/api/delete/<%=index%>" class="delete" >Delete</a>
+               <a href="/api/delete/<%=item._id%>" class="delete" >Delete</a>
             </td>
           </tr>
           <% }); %>
